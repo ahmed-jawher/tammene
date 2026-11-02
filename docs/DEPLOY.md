@@ -23,7 +23,7 @@ works; 2 vCPU / 4 GB RAM is plenty to start.
 ## 2. First install
 
 ```bash
-git clone https://github.com/ahmed-jawher/busstuid.git && cd busstuid
+git clone https://github.com/ahmed-jawher/tammene.git && cd tammene
 node scripts/prod-env.mjs --domain app.example.com --mail-from "Tammene <no-reply@example.com>"
 # edit .env.production: fill SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASSWORD
 docker compose -f infra/docker-compose.prod.yml --env-file .env.production up -d --build

@@ -439,8 +439,8 @@ wusool-safe/
 صاحب المشروع فوّض Claude Code بالتنفيذ الكامل. القاعدة: **لا تتوقف لتسأل؛ اختر الخيار الأكثر أماناً للأطفال ثم الأبسط، ووثّق القرار.**
 
 ### 20.1 المستودع وGit
-- المستودع: `https://github.com/ahmed-jawher/busstuid` (المالك `ahmed-jawher`؛ لصاحب المشروع صلاحية push). يُستنسخ في `D:\Downloads\busstuid`.
-- اسم المستودع يبقى `busstuid`؛ اسم المنتج والحزم داخل الكود `wusool-safe` (`@wusool/api`, `@wusool/web`, ...).
+- المستودع: `https://github.com/ahmed-jawher/tammene` (كان `busstuid` حتى 2026-11؛ الروابط القديمة تُحوَّل تلقائياً) (المالك `ahmed-jawher`؛ لصاحب المشروع صلاحية push). يُستنسخ في `D:\Downloads\busstuid`.
+- اسم المستودع `tammene`؛ اسم المنتج والحزم داخل الكود `wusool-safe` (`@wusool/api`, `@wusool/web`, ...).
 - لكل مرحلة فرع `phase-N-<name>`، مع commits صغيرة ومتكررة، ثم Pull Request إلى `main`. **يُدمج الـ PR تلقائياً (squash)** فقط بعد نجاح كل اختبارات المرحلة وlint وtypecheck، ثم يُحذف الفرع ويبدأ فرع المرحلة التالية من `main` المحدّث.
 - CI عبر GitHub Actions (مجاني للمستودعات العامة)، وتُستخدم `embedded-postgres` داخل CI أيضاً.
 - **ممنوع:** force push على `main`، حذف المستودع، تغيير إعدادات المستودع أو صلاحياته، رفع أي سر (`.env` و`.data/` في `.gitignore`، مع فحص آلي قبل كل commit يرفض أي نص يشبه مفتاحاً خاصاً أو token).
