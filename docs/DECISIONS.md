@@ -567,3 +567,16 @@ the documents and the code.
   Its CSP allows inline script and style (that is how a single-file page works) and nothing from
   any other origin; it is a separate origin from the app, with no sign-in or cookies.
 - **Prettier skips `index.html`**: the embedded icon data is one long line by design.
+
+## Repository renamed busstuid → tammene (owner's request, 2026-11-02)
+
+- **GitHub redirects the old name** for clones, pushes, links and API calls, so existing clones
+  keep working; `git remote set-url origin https://github.com/ahmed-jawher/tammene.git` is
+  optional tidying.
+- **Images move to `ghcr.io/ahmed-jawher/tammene-{api,web}`**, because the deploy workflow names
+  them after the repository. The old `busstuid-*` packages stay where they are.
+- **A rollback can cross the rename**: `infra/deploy.sh` now records the image name next to the
+  tag in `.deploy.env`, and a `.deploy.env` without one (written before the rename) means the old
+  `busstuid` name. Otherwise the first failed deploy after the rename would look for the previous
+  version under the new name, find nothing, and leave the API down.
+- Internal names (`wusool`, packages, database roles) are unchanged.

@@ -13,7 +13,13 @@ compose() {
   docker compose -f infra/docker-compose.prod.yml -f infra/docker-compose.images.yml \
     --env-file .env.production --env-file .deploy.env "$@"
 }
-use_tag() { printf 'IMAGE_TAG=%s\n' "$1" > .deploy.env; }
+# The image name is kept beside the tag: images built before the repository was renamed
+# (busstuid → tammene) carry the old name, and a rollback must start those, not look for them
+# under the new one. The exported value wins over .deploy.env inside compose.
+use_version() {
+  printf 'IMAGE_PREFIX=%s\nIMAGE_TAG=%s\n' "$1" "$2" > .deploy.env
+  export IMAGE_PREFIX="$1"
+}
 wait_healthy() {
   for _ in $(seq 1 36); do
     [ "$(docker inspect -f '{{.State.Health.Status}}' "$(compose ps -q api)" 2>/dev/null)" = healthy ] && return 0
@@ -22,10 +28,13 @@ wait_healthy() {
   return 1
 }
 
+PREFIX="${IMAGE_PREFIX:-ghcr.io/ahmed-jawher/tammene}"
 PREVIOUS="$(sed -n 's/^IMAGE_TAG=//p' .deploy.env 2>/dev/null || true)"
+PREVIOUS_PREFIX="$(sed -n 's/^IMAGE_PREFIX=//p' .deploy.env 2>/dev/null || true)"
+PREVIOUS_PREFIX="${PREVIOUS_PREFIX:-ghcr.io/ahmed-jawher/busstuid}"
 
 echo "→ pulling images for ${TAG}"
-use_tag "$TAG"
+use_version "$PREFIX" "$TAG"
 compose pull --quiet api web backup
 
 # Backup of the current database before migrations run. Skipped only on a first install.
@@ -44,9 +53,9 @@ fi
 
 echo "✗ API not healthy on ${TAG}" >&2
 compose logs --tail 80 api >&2 || true
-if [ -n "$PREVIOUS" ] && [ "$PREVIOUS" != "$TAG" ]; then
+if [ -n "$PREVIOUS" ] && [ "$PREVIOUS_PREFIX:$PREVIOUS" != "$PREFIX:$TAG" ]; then
   echo "→ starting the previous version ${PREVIOUS} again" >&2
-  use_tag "$PREVIOUS"
+  use_version "$PREVIOUS_PREFIX" "$PREVIOUS"
   compose up -d --no-build --remove-orphans
   wait_healthy && echo "✓ back on ${PREVIOUS}" >&2
 fi
