@@ -580,3 +580,10 @@ the documents and the code.
   `busstuid` name. Otherwise the first failed deploy after the rename would look for the previous
   version under the new name, find nothing, and leave the API down.
 - Internal names (`wusool`, packages, database roles) are unchanged.
+
+## Landing page on Vercel while the server is down (owner's request, 2026-11-05)
+
+- `apps/landing/vercel.json` lets Vercel serve `apps/landing/` as plain files (Root Directory
+  `apps/landing`, no install, no build), with the same headers, caching and fallback to
+  `index.html` as the Caddy block. Caddy keeps serving the same files when it runs, so moving
+  `about.tammene.com` back is only a DNS change.
